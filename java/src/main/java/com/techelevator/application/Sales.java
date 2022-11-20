@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -15,14 +16,14 @@ import java.util.Map;
 public class Sales {
 
     private File salesFile;
-    private double totalSales;
+    private BigDecimal totalSales;
 
     public Sales(String salesFileName) {
         this.salesFile = new File(salesFileName);
     }
 
-    public void setTotalSales(double newSale) {
-        totalSales += newSale;
+    public void setTotalSales(BigDecimal newSale) {
+        totalSales = totalSales.add(newSale);
     }
 
     public void write(List<Items> itemsList) {

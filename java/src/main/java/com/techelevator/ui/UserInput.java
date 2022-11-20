@@ -47,21 +47,25 @@ public class UserInput {
             }
     }
 
-    public static double getMoneyOption() {
+    public static BigDecimal getMoneyOption() {
         String moneyIn = scanner.nextLine();
-        int dollarsIn = Integer.parseInt(moneyIn);
-        switch (dollarsIn) {
-            case 1:
-                return 1.00;
-            case 5:
-                return 5.00;
-            case 10:
-                return 10.00;
-            case 20:
-                return 20.00;
-            default:
-                System.out.println("Invalid amount. Please select $1, $5, $10, $20");
-                return 0.00;
+        BigDecimal dollarsIn = new BigDecimal(moneyIn);
+        BigDecimal zero = new BigDecimal(0);
+        BigDecimal one = new BigDecimal(1);
+        BigDecimal five = new BigDecimal(5);
+        BigDecimal ten = new BigDecimal(10);
+        BigDecimal twenty = new BigDecimal(20);
+        if(dollarsIn.compareTo(one) == 0) {
+            return one;
+        } else if(dollarsIn.compareTo(five) == 0) {
+            return five;
+        } else if(dollarsIn.compareTo(ten) == 0) {
+            return ten;
+        } else if(dollarsIn.compareTo(twenty) == 0) {
+            return twenty;
+        } else {
+            System.out.println("Invalid amount. Please select $1, $5, $10, $20");
+            return zero;
         }
     }
 

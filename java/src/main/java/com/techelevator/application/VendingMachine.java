@@ -7,6 +7,7 @@ import org.w3c.dom.ls.LSOutput;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -21,12 +22,13 @@ public class VendingMachine
     Sales sales = new Sales(salesReportFileName);
     Audit audit = new Audit("Audit.txt");
     private List<Items> items = new ArrayList<>();
-    private double moneyInserted;
-    private double totalMoney;
+    private BigDecimal moneyInserted;
+    private BigDecimal totalMoney = new BigDecimal(0.00);
     private String chosenItem;
     private int itemsPurchased;
     private static final int SOLD_PER_DISCOUNT = 1;
-    private static final double DISCOUNT_AMOUNT = 1.00;
+    private static final BigDecimal DISCOUNT_AMOUNT = new BigDecimal(1.0);
+    private BigDecimal zero = new BigDecimal(0);
 
     public void loadFile() {
         File file = new File("catering1.csv");
@@ -35,18 +37,19 @@ public class VendingMachine
             while(fileScanner.hasNext()) {
                 String line = fileScanner.nextLine();
                 String[] lineArr = line.split("\\,");
+                BigDecimal priceBD;
 
                 if(lineArr[3].equals("Munchy")) {
-                    Items munchy = new Munchy(lineArr[1], Double.parseDouble(lineArr[2]), lineArr[0], "Munchy, Munchy, so Good!");
+                    Items munchy = new Munchy(lineArr[1], priceBD = new BigDecimal(lineArr[2]), lineArr[0], "Munchy, Munchy, so Good!");
                     items.add(munchy);
                 } else if(lineArr[3].equals("Candy")) {
-                    Items candy = new Candy(lineArr[1], Double.parseDouble(lineArr[2]), lineArr[0], "Sugar, Sugar, so Sweet!");
+                    Items candy = new Candy(lineArr[1], priceBD = new BigDecimal(lineArr[2]), lineArr[0], "Sugar, Sugar, so Sweet!");
                     items.add(candy);
                 } else if(lineArr[3].equals("Drink")) {
-                    Items drink = new Drink(lineArr[1], Double.parseDouble(lineArr[2]), lineArr[0], "Drinky, Drinky, Slurp Slurp!");
+                    Items drink = new Drink(lineArr[1], priceBD = new BigDecimal(lineArr[2]), lineArr[0], "Drinky, Drinky, Slurp Slurp!");
                     items.add(drink);
                 } else {
-                    Items gum = new Gum(lineArr[1], Double.parseDouble(lineArr[2]), lineArr[0], "Chewy, Chewy, Lots O Bubbles!");
+                    Items gum = new Gum(lineArr[1], priceBD = new BigDecimal(lineArr[2]), lineArr[0], "Chewy, Chewy, Lots O Bubbles!");
                     items.add(gum);
                 }
             }
@@ -73,8 +76,8 @@ public class VendingMachine
                         case "Feed Money":
                             UserOutput.displayMoneyMenu();
                             moneyInserted = UserInput.getMoneyOption();
-                            totalMoney += moneyInserted;
-                            if(moneyInserted != 0.00) {
+                            totalMoney = totalMoney.add(moneyInserted);
+                            if(moneyInserted.compareTo(zero) != 0) {
                                 // Ten spaces for spacing
                                 audit.write("MONEY FED:          $"
                                         + String.format("%.2f", moneyInserted) + "    $"
@@ -88,7 +91,7 @@ public class VendingMachine
                             getItem(chosenItem);
                             break;
                         case "Finish":
-                            if(totalMoney > 0.0) {
+                            if(totalMoney.compareTo(zero) > 0) {
                                 getChange();
                             }
 
@@ -111,21 +114,20 @@ public class VendingMachine
                 System.out.println("That item is no longer available, please choose again.");
                 return;
             }
-            if(chosenItem.equalsIgnoreCase(item.getSlotNumber()) && item.getPrice() > totalMoney) {
+            if(chosenItem.equalsIgnoreCase(item.getSlotNumber()) && item.getPrice().compareTo(totalMoney) > 0) {
                 System.out.println("You do not have enough money, please try adding more or selecting a cheaper item.\n");
                 return;
             }
             if(chosenItem.equalsIgnoreCase(item.getSlotNumber())) {
                 itemsPurchased++;
-                double beforePurchaseTotal = totalMoney;
+                BigDecimal beforePurchaseTotal = totalMoney;
                 if(itemsPurchased % 2 == 0) {
                     item.removeItem();
-                    sales.setTotalSales(item.getPrice() - DISCOUNT_AMOUNT);
+                    sales.setTotalSales(item.getPrice().subtract(DISCOUNT_AMOUNT));
                     item.setSoldAtDiscount(SOLD_PER_DISCOUNT);
-                    totalMoney -= (item.getPrice() - DISCOUNT_AMOUNT);
+                    totalMoney = totalMoney.subtract(item.getPrice().subtract(DISCOUNT_AMOUNT));
                     System.out.println("Dispensing " + item.getName() + " for $"
-                            + String.format("%.2f", (item.getPrice() - DISCOUNT_AMOUNT)) + ", money remaining: $" +
-                            String.format("%.2f", totalMoney));
+                            + (item.getPrice().subtract(DISCOUNT_AMOUNT)) + ", money remaining: $" + totalMoney);
                     System.out.println(item.getDispenseMessage());
                     audit.write(item.getName() + "        " + item.getSlotNumber() + " $"
                             + String.format("%.2f", beforePurchaseTotal) + "    $"
@@ -135,7 +137,7 @@ public class VendingMachine
                 else {
                     item.removeItem();
                     sales.setTotalSales(item.getPrice());
-                    totalMoney -= item.getPrice();
+                    totalMoney = totalMoney.subtract(item.getPrice());
                     System.out.println("Dispensing " + item.getName() + " for $"
                             + item.getPrice() + ", money remaining: $" + String.format("%.2f", totalMoney));
                     System.out.println(item.getDispenseMessage());
@@ -150,34 +152,45 @@ public class VendingMachine
     }
 
     public void getChange() {
-        double changeDue = totalMoney;
+        BigDecimal changeDue = totalMoney;
         int dollars = 0;
         int quarters = 0;
         int dimes = 0;
         int nickels = 0;
-        int moneyInt = (int)((totalMoney + 0.0001) * 100);
-        while(moneyInt > 0) {
-            if (moneyInt >= 100) {
-                dollars = moneyInt / 100;
-                moneyInt -= (dollars * 100);
+        BigDecimal dollarBD = new BigDecimal(1.00);
+        BigDecimal quarterBD = new BigDecimal(0.25);
+        BigDecimal dimeBD = new BigDecimal(0.10);
+        BigDecimal nickelBD = new BigDecimal(0.05);
+        while(changeDue.compareTo(zero) > 0) {
+            if (changeDue.compareTo(dollarBD) > -1) {
+                while(changeDue.compareTo(dollarBD) > -1) {
+                    changeDue = changeDue.subtract(dollarBD);
+                    dollars++;
+                }
             }
-            if(moneyInt >= 25) {
-                quarters = moneyInt / 25;
-                moneyInt -= (quarters * 25);
+            if(changeDue.compareTo(quarterBD) > -1) {
+                while(changeDue.compareTo(quarterBD) > -1) {
+                    changeDue = changeDue.subtract(quarterBD);
+                    quarters++;
+                }
             }
-            if(moneyInt >= 10) {
-                dimes = moneyInt / 10;
-                moneyInt -= (dimes * 10);
+            if(changeDue.compareTo(dimeBD) > -1) {
+                while(changeDue.compareTo(dimeBD) > -1) {
+                    changeDue = changeDue.subtract(dimeBD);
+                    dimes++;
+                }
             }
-            if(moneyInt >= 5) {
-                nickels = moneyInt / 5;
-                moneyInt -= (nickels * 5);
+            if(changeDue.compareTo(nickelBD) > -1) {
+                while(changeDue.compareTo(nickelBD) > -1) {
+                    changeDue = changeDue.subtract(nickelBD);
+                    nickels++;
+                }
             }
         }
         audit.write("CHANGE GIVEN:          $" + String.format("%.2f", totalMoney) + "    $" + "0.00");
         UserOutput.displayChangeMessage(dollars, quarters, dimes, nickels, changeDue);
-        totalMoney = 0.0;
-        moneyInserted = 0.0;
+        totalMoney = zero;
+        moneyInserted = zero;
     }
     public List<Items> getItems() {
         return items;

@@ -1,19 +1,21 @@
 package com.techelevator.models;
 
+import java.math.BigDecimal;
+
 public abstract class Items {
 
     private String name;
-    private double price;
+    private BigDecimal price;
     private String slotNumber;
     private int amountLeft;
     private int soldAtDiscount;
     private String dispenseMessage;
 
-    public Items(String name, double price, String slotNumber, String dispenseMessage) {
+    public Items(String name, BigDecimal price, String slotNumber, String dispenseMessage) {
         this.name = name;
         this.price = price;
         this.slotNumber = slotNumber;
-        amountLeft = 6;
+        amountLeft =6;
         soldAtDiscount = 0;
         this.dispenseMessage = dispenseMessage;
 
@@ -23,7 +25,7 @@ public abstract class Items {
         return this.name;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return this.price;
     }
 

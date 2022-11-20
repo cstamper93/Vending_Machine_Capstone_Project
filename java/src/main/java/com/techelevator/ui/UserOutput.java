@@ -42,7 +42,7 @@ public class UserOutput
         System.out.print("\nPlease select an option: ");
     }
 
-    public static void displayPurchaseMenu(double moneyInserted) {
+    public static void displayPurchaseMenu(BigDecimal moneyInserted) {
         System.out.println("(M) Feed Money");
         System.out.println("(S) Select Item");
         System.out.println("(F) Finish Transaction\n");
@@ -66,7 +66,7 @@ public class UserOutput
             System.out.println(item);
     }
 
-    public static void displayChangeMessage(int dollars, int quarters, int dimes, int nickels, double changeDue) {
+    public static void displayChangeMessage(int dollars, int quarters, int dimes, int nickels, BigDecimal changeDue) {
         System.out.println("\nThank you! Your change is:");
         System.out.println(dollars + " dollars");
         System.out.println(quarters + " quarters");
