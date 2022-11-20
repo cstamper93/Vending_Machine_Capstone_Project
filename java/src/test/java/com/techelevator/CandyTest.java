@@ -11,13 +11,12 @@ public class CandyTest {
 
     @Test
     public void candy_constructor_should_build_object_with_proper_attributes() {
-        BigDecimal priceBD;
-        Candy candy = new Candy("w&w", priceBD = new BigDecimal(1.99), "D3", "Wow!");
+        Candy candy = new Candy("w&w", "1.99", "D3", "Wow!");
         String expectedName = "w&w";
         String actualName = candy.getName();
         assertEquals(expectedName, actualName);
 
-        BigDecimal expectedPrice = new BigDecimal(1.99);
+        BigDecimal expectedPrice = new BigDecimal("1.99");
         BigDecimal actualPrice = candy.getPrice();
         assertEquals(expectedPrice, actualPrice);
 

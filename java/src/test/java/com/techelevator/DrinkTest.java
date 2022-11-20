@@ -12,13 +12,12 @@ public class DrinkTest {
 
     @Test
     public void drink_constructor_should_build_object_with_proper_attributes() {
-        BigDecimal priceBD;
-        Drink drink = new Drink("Pepsey", priceBD = new BigDecimal(2.50), "A4", "Refreshing!");
+        Drink drink = new Drink("Pepsey", "2.50", "A4", "Refreshing!");
         String expectedName = "Pepsey";
         String actualName = drink.getName();
         assertEquals(expectedName, actualName);
 
-        BigDecimal expectedPrice = new BigDecimal(2.50);
+        BigDecimal expectedPrice = new BigDecimal("2.50");
         BigDecimal actualPrice = drink.getPrice();
         assertEquals(expectedPrice, actualPrice);
 

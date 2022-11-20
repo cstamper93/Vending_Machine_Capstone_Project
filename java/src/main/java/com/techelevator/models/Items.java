@@ -4,18 +4,18 @@ import java.math.BigDecimal;
 
 public abstract class Items {
 
-    private String name;
-    private BigDecimal price;
-    private String slotNumber;
+    private final String name;
+    private final BigDecimal price;
+    private final String slotNumber;
     private int amountLeft;
     private int soldAtDiscount;
-    private String dispenseMessage;
+    private final String dispenseMessage;
 
-    public Items(String name, BigDecimal price, String slotNumber, String dispenseMessage) {
+    public Items(String name, String price, String slotNumber, String dispenseMessage) {
         this.name = name;
-        this.price = price;
+        this.price = new BigDecimal(price);
         this.slotNumber = slotNumber;
-        amountLeft =6;
+        amountLeft = 6;
         soldAtDiscount = 0;
         this.dispenseMessage = dispenseMessage;
 

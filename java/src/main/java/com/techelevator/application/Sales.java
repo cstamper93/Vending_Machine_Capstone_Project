@@ -16,7 +16,7 @@ import java.util.Map;
 public class Sales {
 
     private File salesFile;
-    private BigDecimal totalSales;
+    private BigDecimal totalSales = new BigDecimal(0.00);
 
     public Sales(String salesFileName) {
         this.salesFile = new File(salesFileName);

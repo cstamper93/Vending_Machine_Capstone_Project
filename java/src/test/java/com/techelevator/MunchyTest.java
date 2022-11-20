@@ -12,13 +12,12 @@ public class MunchyTest {
 
     @Test
     public void munchy_constructor_should_build_object_with_proper_attributes() {
-        BigDecimal priceBD;
-        Munchy munchy = new Munchy("Cheetoes", priceBD = new BigDecimal(0.75), "C2", "Ew!");
+        Munchy munchy = new Munchy("Cheetoes", "0.75", "C2", "Ew!");
         String expectedName = "Cheetoes";
         String actualName = munchy.getName();
         assertEquals(expectedName, actualName);
 
-        BigDecimal expectedPrice = new BigDecimal(0.75);
+        BigDecimal expectedPrice = new BigDecimal("0.75");
         BigDecimal actualPrice = munchy.getPrice();
         assertEquals(expectedPrice, actualPrice);
 

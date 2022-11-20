@@ -10,9 +10,9 @@ Wonka Bar|0|0
 Caramel Bar|0|0
 7Down|0|0
 Moonpie|0|0
-Popcorn|0|0
-Teaberry|0|0
+Popcorn|1|0
+Teaberry|0|1
 Preengles|0|0
-Singlemint Gum|2|2
-Chiclets|0|0
-TOTAL SALES 7.40
+Singlemint Gum|0|0
+Chiclets|1|0
+TOTAL SALES 3.75

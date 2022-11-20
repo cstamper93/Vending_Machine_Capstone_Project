@@ -11,13 +11,12 @@ public class GumTest {
 
     @Test
     public void gum_constructor_should_build_object_with_proper_attributes() {
-        BigDecimal priceBD;
-       Gum gum = new Gum("DoubleBuble", priceBD = new BigDecimal(3.17), "B1", "Pop!");
+       Gum gum = new Gum("DoubleBuble", "3.17", "B1", "Pop!");
         String expectedName = "DoubleBuble";
         String actualName = gum.getName();
         assertEquals(expectedName, actualName);
 
-        BigDecimal expectedPrice = new BigDecimal(3.17);
+        BigDecimal expectedPrice = new BigDecimal("3.17");
         BigDecimal actualPrice = gum.getPrice();
         assertEquals(expectedPrice, actualPrice);
 
